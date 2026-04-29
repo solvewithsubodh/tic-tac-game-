@@ -1,0 +1,16 @@
+{
+  "name": "xo-game",
+  "version": "1.0.0",
+  "description": "Multiplayer Tic-Tac-Toe with ranked system",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0",
+    "express": "^4.21.0",
+    "socket.io": "^4.8.0",
+    "uuid": "^10.0.0"
+  }
+}

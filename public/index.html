@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Play Tic-Tac-Toe online with friends, vs computer AI, or local multiplayer. Ranked competitive matches with leaderboards.">
+  <title>XO Arena — Multiplayer Tic-Tac-Toe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Particle Background -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- ═══════════ SPLASH SCREEN ═══════════ -->
+  <section id="screen-splash" class="screen active">
+    <div class="splash-content">
+      <div class="logo-container">
+        <div class="logo-x">X</div>
+        <div class="logo-o">O</div>
+      </div>
+      <h1 class="game-title">XO <span class="title-accent">Arena</span></h1>
+      <p class="tagline">The Ultimate Tic-Tac-Toe Battle</p>
+      <button id="btn-splash-start" class="btn btn-primary btn-glow pulse-anim">
+        <span>ENTER ARENA</span>
+        <div class="btn-shimmer"></div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══════════ AUTH SCREEN ═══════════ -->
+  <section id="screen-auth" class="screen">
+    <div class="auth-container glass-panel">
+      <h2 class="section-title">Join the Arena</h2>
+      <div id="auth-login-form" class="auth-form">
+        <div class="input-group">
+          <input type="text" id="auth-username" class="input-neon" placeholder="Username" maxlength="20" autocomplete="off">
+          <div class="input-line"></div>
+        </div>
+        <div class="input-group" id="auth-display-group" style="display:none;">
+          <input type="text" id="auth-display-name" class="input-neon" placeholder="Display Name" maxlength="30" autocomplete="off">
+          <div class="input-line"></div>
+        </div>
+        <div id="auth-avatar-picker" style="display:none;">
+          <p class="label-small">Choose Avatar</p>
+          <div class="avatar-grid" id="avatar-grid"></div>
+        </div>
+        <p id="auth-error" class="error-text"></p>
+        <button id="btn-auth-login" class="btn btn-primary">LOGIN</button>
+        <button id="btn-auth-register" class="btn btn-secondary" style="display:none;">CREATE ACCOUNT</button>
+        <p class="auth-switch" id="auth-switch-text">
+          New player? <a href="#" id="btn-auth-switch">Create Account</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ MAIN MENU ═══════════ -->
+  <section id="screen-menu" class="screen">
+    <div class="menu-header">
+      <div class="user-profile-bar" id="user-profile-bar">
+        <div class="profile-avatar" id="menu-avatar"></div>
+        <div class="profile-info">
+          <span class="profile-name" id="menu-name"></span>
+          <span class="profile-rank" id="menu-rank"></span>
+        </div>
+        <div class="profile-stats-mini">
+          <span class="stat-badge" id="menu-points">0 pts</span>
+          <span class="player-id-badge" id="menu-player-id">XO-XXXXX</span>
+        </div>
+      </div>
+    </div>
+    <div class="menu-grid">
+      <button id="btn-mode-computer" class="mode-card glass-panel">
+        <div class="mode-icon">🤖</div>
+        <h3>vs Computer</h3>
+        <p>Challenge the AI</p>
+        <div class="mode-glow mode-glow-cyan"></div>
+      </button>
+      <button id="btn-mode-local" class="mode-card glass-panel">
+        <div class="mode-icon">👥</div>
+        <h3>Local Match</h3>
+        <p>Play with a friend</p>
+        <div class="mode-glow mode-glow-magenta"></div>
+      </button>
+      <button id="btn-mode-online" class="mode-card glass-panel">
+        <div class="mode-icon">🌐</div>
+        <h3>Online Match</h3>
+        <p>Play with friends online</p>
+        <div class="mode-glow mode-glow-purple"></div>
+      </button>
+    </div>
+    <div class="menu-bottom-nav">
+      <button id="btn-nav-leaderboard" class="nav-btn">
+        <span class="nav-icon">🏆</span>
+        <span>Rankings</span>
+      </button>
+      <button id="btn-nav-friends" class="nav-btn">
+        <span class="nav-icon">👫</span>
+        <span>Friends</span>
+        <span class="badge" id="friend-req-badge" style="display:none;">0</span>
+      </button>
+      <button id="btn-nav-profile" class="nav-btn">
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══════════ DIFFICULTY SELECT ═══════════ -->
+  <section id="screen-difficulty" class="screen">
+    <button class="btn-back" id="btn-diff-back">← Back</button>
+    <div class="difficulty-container glass-panel">
+      <h2 class="section-title">Select Difficulty</h2>
+      <div class="difficulty-options">
+        <button class="diff-btn" data-diff="easy">
+          <span class="diff-emoji">😊</span>
+          <span class="diff-label">Easy</span>
+          <span class="diff-desc">Random moves</span>
+        </button>
+        <button class="diff-btn" data-diff="medium">
+          <span class="diff-emoji">🤔</span>
+          <span class="diff-label">Medium</span>
+          <span class="diff-desc">Sometimes smart</span>
+        </button>
+        <button class="diff-btn" data-diff="hard">
+          <span class="diff-emoji">😈</span>
+          <span class="diff-label">Hard</span>
+          <span class="diff-desc">Unbeatable AI</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ LOCAL NAMES ═══════════ -->
+  <section id="screen-local-setup" class="screen">
+    <button class="btn-back" id="btn-local-back">← Back</button>
+    <div class="local-setup-container glass-panel">
+      <h2 class="section-title">Local Match Setup</h2>
+      <div class="local-players">
+        <div class="local-player">
+          <span class="symbol-label symbol-x">X</span>
+          <input type="text" id="local-p1-name" class="input-neon" placeholder="Player 1 Name" value="Player 1" maxlength="20">
+        </div>
+        <div class="vs-divider">VS</div>
+        <div class="local-player">
+          <span class="symbol-label symbol-o">O</span>
+          <input type="text" id="local-p2-name" class="input-neon" placeholder="Player 2 Name" value="Player 2" maxlength="20">
+        </div>
+      </div>
+      <button id="btn-local-start" class="btn btn-primary">START MATCH</button>
+    </div>
+  </section>
+
+  <!-- ═══════════ ONLINE LOBBY ═══════════ -->
+  <section id="screen-online-lobby" class="screen">
+    <button class="btn-back" id="btn-online-back">← Back</button>
+    <div class="online-lobby glass-panel">
+      <h2 class="section-title">Online Match</h2>
+      <div class="lobby-options">
+        <button id="btn-create-room" class="lobby-btn glass-panel">
+          <span class="lobby-icon">🏠</span>
+          <span>Create Room</span>
+        </button>
+        <button id="btn-join-room" class="lobby-btn glass-panel">
+          <span class="lobby-icon">🔗</span>
+          <span>Join Room</span>
+        </button>
+        <button id="btn-invite-friend" class="lobby-btn glass-panel">
+          <span class="lobby-icon">📨</span>
+          <span>Invite Friend</span>
+        </button>
+      </div>
+      <!-- Create Room sub-panel -->
+      <div id="panel-create-room" class="lobby-panel" style="display:none;">
+        <p class="lobby-info">Share this code with your friend:</p>
+        <div class="room-code-display" id="room-code-display">------</div>
+        <button id="btn-copy-code" class="btn btn-secondary btn-small">📋 Copy Code</button>
+        <div class="waiting-spinner">
+          <div class="spinner"></div>
+          <p>Waiting for opponent...</p>
+        </div>
+      </div>
+      <!-- Join Room sub-panel -->
+      <div id="panel-join-room" class="lobby-panel" style="display:none;">
+        <p class="lobby-info">Enter room code:</p>
+        <input type="text" id="input-room-code" class="input-neon input-code" placeholder="ABC123" maxlength="6" autocomplete="off">
+        <button id="btn-join-code" class="btn btn-primary btn-small">JOIN</button>
+        <p id="join-error" class="error-text"></p>
+      </div>
+      <!-- Invite Friend sub-panel -->
+      <div id="panel-invite-friend" class="lobby-panel" style="display:none;">
+        <p class="lobby-info">Select a friend to invite:</p>
+        <div id="invite-friends-list" class="friends-list-mini"></div>
+        <p class="lobby-info" style="margin-top:10px;" id="invite-status"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ GAME SCREEN ═══════════ -->
+  <section id="screen-game" class="screen">
+    <div class="game-header">
+      <div class="player-display player-left" id="player-left">
+        <div class="player-avatar" id="game-p1-avatar"></div>
+        <span class="player-name" id="game-p1-name">Player 1</span>
+        <span class="player-symbol symbol-x">X</span>
+        <div class="turn-indicator" id="turn-indicator-left"></div>
+      </div>
+      <div class="game-score-center">
+        <span id="game-score-p1" class="score-num">0</span>
+        <span class="score-dash">:</span>
+        <span id="game-score-p2" class="score-num">0</span>
+      </div>
+      <div class="player-display player-right" id="player-right">
+        <div class="player-avatar" id="game-p2-avatar"></div>
+        <span class="player-name" id="game-p2-name">Player 2</span>
+        <span class="player-symbol symbol-o">O</span>
+        <div class="turn-indicator" id="turn-indicator-right"></div>
+      </div>
+    </div>
+    <div class="game-status" id="game-status">X's turn</div>
+    <div class="game-board" id="game-board">
+      <div class="cell" data-index="0"></div>
+      <div class="cell" data-index="1"></div>
+      <div class="cell" data-index="2"></div>
+      <div class="cell" data-index="3"></div>
+      <div class="cell" data-index="4"></div>
+      <div class="cell" data-index="5"></div>
+      <div class="cell" data-index="6"></div>
+      <div class="cell" data-index="7"></div>
+      <div class="cell" data-index="8"></div>
+      <svg class="win-line-svg" id="win-line-svg">
+        <line id="win-line" x1="0" y1="0" x2="0" y2="0"/>
+      </svg>
+    </div>
+    <div class="game-actions" id="game-actions" style="display:none;">
+      <button id="btn-game-menu" class="btn btn-secondary">MENU</button>
+      <button id="btn-game-rematch" class="btn btn-primary btn-glow">REMATCH</button>
+    </div>
+  </section>
+
+  <!-- ═══════════ RESULT SCREEN ═══════════ -->
+  <section id="screen-result" class="screen">
+    <div class="result-container glass-panel">
+      <div class="result-icon" id="result-icon">🏆</div>
+      <h2 class="result-title" id="result-title">Victory!</h2>
+      <p class="result-subtitle" id="result-subtitle">You defeated Computer</p>
+      <div class="result-points" id="result-points" style="display:none;">
+        <span class="points-change" id="points-change">+20</span>
+        <span class="points-label">Ranked Points</span>
+        <div class="rank-display" id="result-rank"></div>
+      </div>
+      <div class="result-buttons">
+        <button id="btn-result-rematch" class="btn btn-primary btn-glow">REMATCH</button>
+        <button id="btn-result-menu" class="btn btn-secondary">MAIN MENU</button>
+      </div>
+    </div>
+    <canvas id="confetti-canvas"></canvas>
+  </section>
+
+  <!-- ═══════════ LEADERBOARD SCREEN ═══════════ -->
+  <section id="screen-leaderboard" class="screen">
+    <button class="btn-back" id="btn-lb-back">← Back</button>
+    <div class="leaderboard-container">
+      <h2 class="section-title">🏆 Rankings</h2>
+      <div class="lb-tabs">
+        <button class="lb-tab active" id="lb-tab-global" data-tab="global">Global</button>
+        <button class="lb-tab" id="lb-tab-friends" data-tab="friends">Friends</button>
+      </div>
+      <div class="lb-table-wrap">
+        <table class="lb-table" id="lb-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Player</th>
+              <th>W</th>
+              <th>L</th>
+              <th>D</th>
+              <th>Points</th>
+            </tr>
+          </thead>
+          <tbody id="lb-table-body"></tbody>
+        </table>
+        <p class="lb-empty" id="lb-empty" style="display:none;">No players yet. Be the first!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FRIENDS SCREEN ═══════════ -->
+  <section id="screen-friends" class="screen">
+    <button class="btn-back" id="btn-friends-back">← Back</button>
+    <div class="friends-container">
+      <h2 class="section-title">👫 Friends</h2>
+      <div class="friends-add glass-panel">
+        <input type="text" id="friend-add-input" class="input-neon" placeholder="Enter Player ID (e.g. XO-A3F9K2)" maxlength="9" autocomplete="off">
+        <button id="btn-add-friend" class="btn btn-primary btn-small">Add</button>
+        <p id="friend-add-error" class="error-text"></p>
+        <p id="friend-add-success" class="success-text"></p>
+      </div>
+      <!-- Pending Requests -->
+      <div id="pending-requests-section" style="display:none;">
+        <h3 class="sub-title">Pending Requests</h3>
+        <div id="pending-requests-list" class="friends-list"></div>
+      </div>
+      <!-- Friends List -->
+      <h3 class="sub-title">My Friends</h3>
+      <div id="friends-list" class="friends-list">
+        <p class="friends-empty" id="friends-empty">No friends yet. Add friends using their Player ID!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PROFILE SCREEN ═══════════ -->
+  <section id="screen-profile" class="screen">
+    <button class="btn-back" id="btn-profile-back">← Back</button>
+    <div class="profile-container glass-panel">
+      <div class="profile-header">
+        <div class="profile-avatar-large" id="profile-avatar"></div>
+        <h2 id="profile-name" class="profile-name-large"></h2>
+        <div class="profile-pid">
+          <span id="profile-player-id">XO-XXXXX</span>
+          <button id="btn-copy-pid" class="btn-icon" title="Copy Player ID">📋</button>
+        </div>
+        <div class="profile-rank-badge" id="profile-rank-badge"></div>
+      </div>
+      <div class="profile-stats-grid">
+        <div class="stat-card glass-panel">
+          <span class="stat-value" id="profile-points">0</span>
+          <span class="stat-label">Points</span>
+        </div>
+        <div class="stat-card glass-panel">
+          <span class="stat-value" id="profile-wins">0</span>
+          <span class="stat-label">Wins</span>
+        </div>
+        <div class="stat-card glass-panel">
+          <span class="stat-value" id="profile-losses">0</span>
+          <span class="stat-label">Losses</span>
+        </div>
+        <div class="stat-card glass-panel">
+          <span class="stat-value" id="profile-draws">0</span>
+          <span class="stat-label">Draws</span>
+        </div>
+        <div class="stat-card glass-panel">
+          <span class="stat-value" id="profile-winrate">0%</span>
+          <span class="stat-label">Win Rate</span>
+        </div>
+        <div class="stat-card glass-panel">
+          <span class="stat-value" id="profile-rank-num">#-</span>
+          <span class="stat-label">Global Rank</span>
+        </div>
+      </div>
+      <h3 class="sub-title">Recent Matches</h3>
+      <div id="profile-match-history" class="match-history"></div>
+      <button id="btn-logout" class="btn btn-danger" style="margin-top: 24px;">LOGOUT</button>
+    </div>
+  </section>
+
+  <!-- ═══════════ NOTIFICATION TOAST ═══════════ -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ═══════════ GAME INVITE MODAL ═══════════ -->
+  <div id="modal-invite" class="modal" style="display:none;">
+    <div class="modal-content glass-panel">
+      <div class="modal-icon">⚔️</div>
+      <h3>Game Invite!</h3>
+      <p id="invite-from-name">Someone</p>
+      <p>wants to battle you!</p>
+      <div class="modal-buttons">
+        <button id="btn-accept-invite" class="btn btn-primary">Accept</button>
+        <button id="btn-reject-invite" class="btn btn-secondary">Decline</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/sounds.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/online.js"></script>
+  <script src="js/friends.js"></script>
+  <script src="js/leaderboard.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

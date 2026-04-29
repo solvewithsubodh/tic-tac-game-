@@ -1,0 +1,6 @@
+node_modules/
+xo-game.db
+xo-game.db-wal
+xo-game.db-shm
+.env
+.data/
